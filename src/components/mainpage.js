@@ -1,6 +1,5 @@
 import React from 'react';
 import Coords from './boxenv';
-import EnergyEnv from './energyenv';
 
 import {MainContext, DEFAULT_STATE} from "./provider";
 
@@ -8,12 +7,15 @@ import {MainContext, DEFAULT_STATE} from "./provider";
 const INC = 0.01;
 class MainPage extends React.Component {
     state = DEFAULT_STATE;
-    getOrigItems(m) {
-        return [
-            {x: 1, y:0},
-            {x: 10, y:0},
-            {x:100, y:0}
-        ];
+    getOrigItems() {
+        const res = [];
+        for (let i =0; i < 3.14;i+=INC) {
+            res.push({
+                x: Math.sin(i) * 100,
+                y: i*100,
+            })
+        }
+        return res;
     }
     pause = () => {
         this.setState({paused: !this.state.paused});
@@ -27,7 +29,10 @@ class MainPage extends React.Component {
     };
 
     processState = ()=>{
-        
+        if (!this.state.orig) {
+            this.setState({orig: this.getOrigItems()});
+        }
+        this.setState({t: this.state.t+1});
     };
 
     render() {
