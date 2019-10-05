@@ -61,4 +61,17 @@ function fourier(data, opt = {}) {
 }
 
 
+function calculate4t(steps, t, draw) {
+    return steps.reduce((acc, cur, ind) => {
+        let n = parseInt((ind+1)/2);
+        if (n*2-ind !== 0) n = -n;
+        const nx = acc.x+ Math.cos(cur.ang + (t*n*2*Math.PI))*cur.mag;
+        const ny = acc.y+ Math.sin(cur.ang + (t*n*2*Math.PI))*cur.mag;
+        const npos = Object.assign({x:nx, y:ny}, cur);
+        draw(acc, npos);
+        return npos;
+    }, Object.assign({x: 0, y: 0}, steps[0]));
+}
+
 exports.fourier = fourier;
+exports.calculate4t = calculate4t;

@@ -2,6 +2,7 @@ import {RunWorker} from "./graphworker";
 import React from "react";
 
 import {MainContext} from "./provider";
+import {calculate4t} from '../util/fourier';
 
 function Coords() {
 
@@ -37,14 +38,9 @@ function Coords() {
         }
         if (state.steps) {
             const t = state.t;
-            state.steps.reduce((acc, cur, ind) => {
-                let n = parseInt((ind+1)/2);
-                if (n*2-ind !== 0) n = -n;
-                const nx = acc.x+ Math.cos(cur.ang + (t*n*2*Math.PI))*cur.mag;
-                const ny = acc.y+ Math.sin(cur.ang + (t*n*2*Math.PI))*cur.mag;
-                drawLine(acc.x, acc.y, nx, ny);
-                return {x:nx, y:ny};
-            }, {x: 0, y: 0});
+            calculate4t(state.steps, t, (acc,n)=>{
+                drawLine(acc.x, acc.y, n.x, n.y);
+            });
         }
 
     }
