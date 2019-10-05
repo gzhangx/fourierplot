@@ -21,14 +21,29 @@ class MainPage extends React.Component {
         this.setState({paused: !this.state.paused});
     };
     reset = () => {
-        this.setState({t: 0, curImpactCount:0 ,paused: false, calculated: null});
+        this.setState({t: 0, times:{}, tpos:[]});
     };
 
     backForward = (inc) => {
         this.setState({t: this.state.t - inc, paused: true, calculated: null});
     };
 
+    tIncChanged= (e)=>{
+        this.setState({tInc: parseFloat(e.target.value) || 0.01});
+    };
+
+    resetMag = (fsind,v)=>{
+        this.state.fsteps[fsind].mag = v;
+        this.setState({fsteps: this.state.fsteps,times:{}, tpos:[]});
+    };
+
+    resetAng = (fsind,v)=>{
+        this.state.fsteps[fsind].ang = v;
+        this.setState({fsteps: this.state.fsteps,times:{}, tpos:[]});
+    };
+
     processState = ()=>{
+        if (this.state.paused) return;
         let t = this.state.t;
         if (!this.state.orig) {
             this.setState({orig: this.getOrigItems()});
@@ -58,6 +73,25 @@ class MainPage extends React.Component {
             <MainContext.Provider value={{state: this.state, processState: this.processState,}}>
                 <div>
                     <Coords/>
+                </div>
+                <div>
+                    <button onClick={this.reset}>Reset</button>
+                    <button onClick={this.pause}>Pause</button>
+                    <input type='text' value={this.state.tInc} onChange={this.tIncChanged} />
+                </div>
+                <div>
+                    {
+                        this.state.fsteps && this.state.fsteps.map((fs, fsind)=>{
+                            return <div>
+                                <input type='text' value={fs.mag} onChange={
+                                    e=>this.resetMag(fsind, parseFloat(e.target.value))
+                                } />
+                                <input type='text' value={fs.ang} onChange={
+                                    e=>this.resetAng(fsind, parseFloat(e.target.value))
+                                } />
+                            </div>;
+                        })
+                    }
                 </div>
             </MainContext.Provider>
         );
