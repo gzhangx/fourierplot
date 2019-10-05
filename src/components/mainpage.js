@@ -2,7 +2,7 @@ import React from 'react';
 import Coords from './boxenv';
 
 import {MainContext, DEFAULT_STATE} from "./provider";
-
+import fourier from '../util/fourier';
 
 const INC = 0.01;
 class MainPage extends React.Component {
@@ -31,6 +31,9 @@ class MainPage extends React.Component {
     processState = ()=>{
         if (!this.state.orig) {
             this.setState({orig: this.getOrigItems()});
+            this.setState({
+                curSteps: fourier.fourier((this.getOrigItems())),
+            })
         }
         this.setState({t: this.state.t+1});
     };

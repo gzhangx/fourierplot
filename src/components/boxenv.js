@@ -34,6 +34,14 @@ function Coords() {
                 }
             }, { px: null, py: null});
         }
+        if (state.curSteps) {
+            state.curSteps.reduce((acc, cur) => {
+                const nx = acc.x+ Math.cos(cur.ang)*cur.mag;
+                const ny = acc.y+ Math.sin(cur.ang)*cur.mag;
+                drawLine(acc.x, acc.y, nx, ny);
+                return {x:nx, y:ny};
+            }, {x: 0, y: 0});
+        }
 
     }
 
