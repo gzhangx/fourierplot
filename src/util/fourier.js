@@ -44,7 +44,7 @@ function fourier1(data, {interval=0.01, steps=[],}) {
     if (who === 0) {
         steps.push(doInterval(who, interval));
     } else {
-        const intervalD = interval;
+        const intervalD = (who < 1000)?interval: interval/2;
         steps.push(doInterval(who, intervalD));
         steps.push(doInterval(-who, intervalD));
     }

@@ -4,6 +4,7 @@ const DEFAULT_STATE = {
     t: 0,
     tMax: 50,
     tInc: 0.01,
+    interval: 0.0005,
     tpos: [],
     times:{},
     ui: {

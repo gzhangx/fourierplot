@@ -32,7 +32,7 @@ class MainPage extends React.Component {
         let t = this.state.t;
         if (!this.state.orig) {
             this.setState({orig: this.getOrigItems()});
-            const fsteps = fourier.fourier(this.getOrigItems(), {loops: this.state.tMax});
+            const fsteps = fourier.fourier(this.getOrigItems(), {interval: this.state.interval, loops: this.state.tMax});
             this.setState({
                 fsteps,
             })

@@ -8,13 +8,15 @@ for (let i =0; i < 3.14;i+=0.01) {
         y: i*100,
     })
 }
-const opt = { steps:[], loops: 5};
+const opt = { steps:[], loops: 150};
 
 const steps = c.fourier(res, opt);
 
-console.log(steps.map(o=>{
+const deg = steps.map(o=>{
     return {
         ang : o.ang*180/Math.PI,
         mag: o.mag,
     }
-}));
+});
+
+steps.map((s,ind)=>console.log(`${s.mag.toFixed(2)} ${ind}`));
