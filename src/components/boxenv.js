@@ -24,6 +24,7 @@ function Coords() {
         drawLine(0,0, width,0);
         //ctx.fillRect(0, 0, 100, 50);
 
+        ctx.fillText(state.t.toFixed(2), 10,10);
         if(state.orig) {
             state.orig.reduce((acc, cur)=>{
                 if (cur.px === null) {
@@ -36,9 +37,11 @@ function Coords() {
         }
         if (state.steps) {
             const t = state.t;
-            state.steps.reduce((acc, cur) => {
-                const nx = acc.x+ Math.cos(cur.ang + t)*cur.mag;
-                const ny = acc.y+ Math.sin(cur.ang + t)*cur.mag;
+            state.steps.reduce((acc, cur, ind) => {
+                let n = parseInt((ind+1)/2);
+                if (n*2-ind !== 0) n = -n;
+                const nx = acc.x+ Math.cos(cur.ang + (t*n*2*Math.PI))*cur.mag;
+                const ny = acc.y+ Math.sin(cur.ang + (t*n*2*Math.PI))*cur.mag;
                 drawLine(acc.x, acc.y, nx, ny);
                 return {x:nx, y:ny};
             }, {x: 0, y: 0});

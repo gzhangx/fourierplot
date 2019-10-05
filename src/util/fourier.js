@@ -12,7 +12,7 @@ function emul(a, b) {
     }
 }
 function fourier1(data, {interval=0.01, steps=[],}) {
-    const who = parseInt(steps.length);
+    const who = parseInt((steps.length+1)/2);
     const max = 1/interval;
     function doInterval(who) {
         function getData(i) {
@@ -30,7 +30,7 @@ function fourier1(data, {interval=0.01, steps=[],}) {
         const avg = {
             x: conv.x ,
             y: conv.y ,
-        }
+        };
         const mag = Math.sqrt(avg.x*avg.x+ (avg.y*avg.y));
         const ang = Math.atan2(avg.y, avg.x);
         return {
@@ -43,7 +43,7 @@ function fourier1(data, {interval=0.01, steps=[],}) {
         steps.push(doInterval(who));
     }else {
         steps.push(doInterval(who));
-        //steps.push(doInterval(-who));
+        steps.push(doInterval(-who));
     }
     return steps;
 }
