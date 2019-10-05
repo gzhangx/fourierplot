@@ -48,7 +48,7 @@ function fourier1(data, {interval=0.01, steps=[],}) {
     return steps;
 }
 
-function fourier(data, opt) {
+function fourier(data, opt = {}) {
     let steps = opt.steps;
     const loops = opt.loops || 10;
     if (!steps) {

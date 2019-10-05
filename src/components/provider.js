@@ -2,6 +2,8 @@ import React from 'react';
 const DEFAULT_STATE = {
     paused: false,
     t: 0,
+    tMax: 10,
+    tInc: 0.01,
     ui: {
         width: 512,
         height: 512,

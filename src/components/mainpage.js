@@ -31,11 +31,14 @@ class MainPage extends React.Component {
     processState = ()=>{
         if (!this.state.orig) {
             this.setState({orig: this.getOrigItems()});
+            const steps = fourier.fourier((this.getOrigItems()));
             this.setState({
-                curSteps: fourier.fourier((this.getOrigItems())),
+                steps,
             })
         }
-        this.setState({t: this.state.t+1});
+        let t = this.state.t+this.state.tInc;
+        if (t > this.state.tMax) t = 0;
+        this.setState({t});
     };
 
     render() {
