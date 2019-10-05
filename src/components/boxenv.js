@@ -9,7 +9,7 @@ function Coords() {
     function processor(ctx, {state}) {
         const {width, height, bottomSpace} = {width: 500, height: 500, bottomSpace: 10};
         function translateY(y) {
-            return height - y - bottomSpace;
+            return (height - y );
         }
         function drawLine(x,y,x1,y1) {
             ctx.beginPath();
@@ -18,11 +18,17 @@ function Coords() {
             ctx.stroke();
         }
 
+        function drawCoordLine(x,y,x1,y1) {
+            ctx.beginPath();
+            ctx.moveTo(x, height - y);
+            ctx.lineTo(x1, height - y1);
+            ctx.stroke();
+        }
 
         ctx.fillStyle = "#F00";
         ctx.strokeStyle = "#F00";
-        drawLine(0,0, 0,height);
-        drawLine(0,0, width,0);
+        drawCoordLine(0,0, 0,height);
+        drawCoordLine(0,0, width,0);
         //ctx.fillRect(0, 0, 100, 50);
 
         ctx.fillText(state.t.toFixed(2), 10,10);
@@ -36,10 +42,17 @@ function Coords() {
                 }
             }, { px: null, py: null});
         }
-        if (state.steps) {
-            const t = state.t;
-            calculate4t(state.steps, t, (acc,n)=>{
-                drawLine(acc.x, acc.y, n.x, n.y);
+        if (state.tsteps) {
+            state.tsteps.forEach(s=>{
+                drawLine(s.orig.x, s.orig.y, s.to.x, s.to.y);
+            });
+        }
+
+        if (state.tpos) {
+            state.tpos.forEach(s=>{
+                ctx.beginPath();
+                ctx.arc(s.x, translateY(s.y), 2, 0, 2*Math.PI);
+                ctx.fill();
             });
         }
 

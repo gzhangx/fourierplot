@@ -12,26 +12,28 @@ function emul(a, b) {
     }
 }
 function fourier1(data, {interval=0.01, steps=[],}) {
-    const who = parseInt((steps.length+1)/2);
-    const max = 1/interval;
-    function doInterval(who) {
+    const who = parseInt((steps.length + 1) / 2);
+
+    function doInterval(who, interval) {
+        const max = 1 / interval;
         function getData(i) {
-            return data[parseInt(i*data.length/max)];
+            return data[parseInt(i * data.length / max)];
         }
+
         const conv = {
             x: 0,
             y: 0,
         };
-        for (let i = 0, t=0; i < max; i++, t+=interval) {
-            const d = emul(getData(i),getEit(who*2*Math.PI*t));
-            conv.x += d.x*interval;
-            conv.y += d.y*interval;
+        for (let i = 0, t = 0; i < max; i++, t += interval) {
+            const d = emul(getData(i), getEit(who * 2 * Math.PI * t));
+            conv.x += d.x;
+            conv.y += d.y;
         }
         const avg = {
-            x: conv.x ,
-            y: conv.y ,
+            x: conv.x*interval,
+            y: conv.y*interval,
         };
-        const mag = Math.sqrt(avg.x*avg.x+ (avg.y*avg.y));
+        const mag = Math.sqrt((avg.x * avg.x) + (avg.y * avg.y));
         const ang = Math.atan2(avg.y, avg.x);
         return {
             mag,
@@ -40,10 +42,11 @@ function fourier1(data, {interval=0.01, steps=[],}) {
     }
 
     if (who === 0) {
-        steps.push(doInterval(who));
-    }else {
-        steps.push(doInterval(who));
-        steps.push(doInterval(-who));
+        steps.push(doInterval(who, interval));
+    } else {
+        const intervalD = interval;
+        steps.push(doInterval(who, intervalD));
+        steps.push(doInterval(-who, intervalD));
     }
     return steps;
 }

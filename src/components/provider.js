@@ -2,8 +2,10 @@ import React from 'react';
 const DEFAULT_STATE = {
     paused: false,
     t: 0,
-    tMax: 10,
+    tMax: 50,
     tInc: 0.01,
+    tpos: [],
+    times:{},
     ui: {
         width: 512,
         height: 512,
