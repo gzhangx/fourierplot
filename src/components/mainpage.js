@@ -8,8 +8,9 @@ const INC = 0.01;
 class MainPage extends React.Component {
     state = DEFAULT_STATE;
     getOrigItems() {
+        return [];
         const res = [];
-        for (let i =0; i < 3.14*2;i+=INC) {
+        for (let i =0; i < 3.14*2;i+=1) {
             res.push({
                 x: Math.sin(i) * 50 + 100,
                 y: i*50 + 100,
@@ -20,16 +21,23 @@ class MainPage extends React.Component {
     pause = () => {
         this.setState({paused: !this.state.paused});
     };
+    showCircle = ()=>{
+        this.setState({showCircle: !this.state.showCircle});
+    };
     reset = () => {
-        this.setState({t: 0, times:{}, tpos:[]});
+        this.setState({t: 0, times:{}, tpos:[], orig: []});
     };
 
     backForward = (inc) => {
         this.setState({t: this.state.t - inc, paused: true, calculated: null});
     };
 
-    tIncChanged= (e)=>{
+    tIncChanged= e=>{
         this.setState({tInc: parseFloat(e.target.value) || 0.01});
+    };
+
+    tMaxChanged = e=>{
+        this.setState({tMax: parseFloat(e.target.value) || 10, times:{}, tpos:[]});
     };
 
     resetMag = (fsind,v)=>{
@@ -42,9 +50,32 @@ class MainPage extends React.Component {
         this.setState({fsteps: this.state.fsteps,times:{}, tpos:[]});
     };
 
+    handleMouseDown = () => { //added code here
+        this.setState({mouseDown: true});
+    };
+
+    handleMouseMove = event=> {
+        if (!this.state.mouseDown) return;
+        const curPt = {
+            x:event.offsetX,
+            y: 500-event.offsetY
+        };
+        this.state.manualPoints.push(curPt);
+
+        this.state.orig.push(curPt);
+        const fsteps = fourier.fourier(this.state.orig, {interval: this.state.interval, loops: this.state.tMax});
+        this.setState({
+            fsteps,
+        });
+    };
+    handleMouseUp = event=> {
+        this.setState({mouseDown: false});
+    };
+
     processState = ()=>{
         if (this.state.paused) return;
         let t = this.state.t;
+        if (this.state.orig.length === 0) return;
         if (!this.state.orig) {
             this.setState({orig: this.getOrigItems()});
             const fsteps = fourier.fourier(this.getOrigItems(), {interval: this.state.interval, loops: this.state.tMax});
@@ -71,13 +102,29 @@ class MainPage extends React.Component {
     render() {
         return (
             <MainContext.Provider value={{state: this.state, processState: this.processState,}}>
-                <div>
+                <div onMouseDown={
+                    e => {
+                        let nativeEvent = e.nativeEvent;
+                        this.handleMouseDown(nativeEvent);
+                    }}
+                     onMouseMove={
+                         e => {
+                             let nativeEvent = e.nativeEvent;
+                             this.handleMouseMove(nativeEvent);
+                         }}
+                     onMouseUp={
+                         e => {
+                             let nativeEvent = e.nativeEvent;
+                             this.handleMouseUp(nativeEvent);
+                         }}>
                     <Coords/>
                 </div>
                 <div>
                     <button onClick={this.reset}>Reset</button>
                     <button onClick={this.pause}>Pause</button>
+                    <button onClick={this.showCircle}>Show Circle</button>
                     <input type='text' value={this.state.tInc} onChange={this.tIncChanged} />
+                    <input type='text' value={this.state.tMax} onChange={this.tMaxChanged} />
                 </div>
                 <div>
                     {

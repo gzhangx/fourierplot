@@ -43,8 +43,18 @@ function Coords() {
             }, { px: null, py: null});
         }
         if (state.tsteps) {
-            state.tsteps.forEach(s=>{
+            state.tsteps.map((s, ind)=>{
                 drawLine(s.orig.x, s.orig.y, s.to.x, s.to.y);
+                if (state.showCircle) {
+                    if (ind) {
+                        ctx.beginPath();
+                        //ctx.globalAlpha = 0.3;
+                        ctx.strokeStyle = 'rgba(0,100,100,0.3)';
+                        ctx.arc(s.orig.x, translateY(s.orig.y), s.to.mag, 0, 2 * Math.PI);
+                        ctx.stroke();
+                        //ctx.globalAlpha = 1;
+                    }
+                }
             });
         }
 

@@ -7,6 +7,9 @@ const DEFAULT_STATE = {
     interval: 0.0005,
     tpos: [],
     times:{},
+    orig: [],
+    manualPoints : [],
+    showCircle: false,
     ui: {
         width: 512,
         height: 512,
