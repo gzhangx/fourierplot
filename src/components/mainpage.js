@@ -37,7 +37,7 @@ class MainPage extends React.Component {
     };
 
     tMaxChanged = e=>{
-        this.setState({tMax: parseFloat(e.target.value) || 10, times:{}, tpos:[]});
+        this.setState({tMax: parseInt(e.target.value) || 10, times:{}, tpos:[], recalculate:true});
     };
 
     resetMag = (fsind,v)=>{
@@ -76,9 +76,10 @@ class MainPage extends React.Component {
         if (this.state.paused) return;
         let t = this.state.t;
         if (this.state.orig.length === 0) return;
-        if (!this.state.orig) {
-            this.setState({orig: this.getOrigItems()});
-            const fsteps = fourier.fourier(this.getOrigItems(), {interval: this.state.interval, loops: this.state.tMax});
+        if (this.state.recalculate) {
+            this.setState({recalculate:false});
+            //this.setState({orig: this.getOrigItems()});
+            const fsteps = fourier.fourier(this.state.orig, {interval: this.state.interval, loops: this.state.tMax});
             this.setState({
                 fsteps,
             })

@@ -10,6 +10,7 @@ const DEFAULT_STATE = {
     orig: [],
     manualPoints : [],
     showCircle: false,
+    recalculate:true,
     ui: {
         width: 512,
         height: 512,
