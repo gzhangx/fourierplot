@@ -3,7 +3,8 @@ import Coords from './boxenv';
 
 import {MainContext, DEFAULT_STATE} from "./provider";
 import fourier, {calculate4t} from '../util/fourier';
-
+import DownloadLink from "react-download-link";
+import Dropzone from 'react-dropzone'
 const INC = 0.01;
 class MainPage extends React.Component {
     state = DEFAULT_STATE;
@@ -124,6 +125,17 @@ class MainPage extends React.Component {
         this.setState({t});
     };
 
+    onDrop = (acceptedFiles, rejectedFiles) => {
+        const self = this;
+        const reader = new FileReader()        
+        reader.onabort = () => console.log('file reading was aborted')
+        reader.onerror = () => console.log('file reading has failed')
+        reader.onload = (event) => {
+        // Do whatever you want with the file contents     
+            self.setState({orig: JSON.parse(event.target.result.toString())});
+        };
+        acceptedFiles.forEach(file => reader.readAsText(file))
+    };
     render() {
         return (
             <MainContext.Provider value={{state: this.state, processState: this.processState,}}>
@@ -150,6 +162,23 @@ class MainPage extends React.Component {
                     <button onClick={this.showCircle}>Show Circle</button>
                     <input type='text' value={this.state.tInc} onChange={this.tIncChanged} />
                     <input type='text' value={this.state.tMax} onChange={this.tMaxChanged} />
+                    <DownloadLink
+	                        filename="points.txt"
+	                        exportFile={() => JSON.stringify(this.state.orig)}
+                        >
+		                    Save to disk
+                        </DownloadLink>
+                        <Dropzone onDrop={(acceptedFiles, rejectedFiles) => this.onDrop(acceptedFiles,rejectedFiles)}>
+  {({getRootProps, getInputProps}) => (
+    <section>
+      <div {...getRootProps()}>
+        <input {...getInputProps()} />
+        <p>Drag 'n' drop some files here, or click to select files</p>
+      </div>
+    </section>
+  )}
+</Dropzone>
+                        
                 </div>
                 <div>
                     {
