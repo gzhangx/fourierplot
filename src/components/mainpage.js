@@ -60,7 +60,31 @@ class MainPage extends React.Component {
             x:event.offsetX,
             y: 500-event.offsetY
         };
-        this.state.manualPoints.push(curPt);
+        if (this.state.manualPoints.length) {
+            let prev = this.state.manualPoints[this.state.manualPoints.length - 1];
+            const pts = [];
+            const inc = (a,b)=>{
+                if (a>b) return a-1;
+                if (a<b) return a+1;
+                return a;
+            };
+            while( true) {
+                prev = {
+                    x: inc(prev.x, curPt.x),
+                    y: inc(prev.y, curPt.y),
+                };
+                pts.push(prev);
+                if (prev.x === curPt.x && prev.y === curPt.y) break;
+                //if (i > 15) break;
+            }
+            const toAdd = pts.filter(p=> {
+                return !this.state.manualPoints.find(existing=>{
+                    return existing.x === p.x && existing.y === p.y;
+                })
+            });
+            toAdd.forEach(p=>this.state.manualPoints.push(p))
+        }else
+            this.state.manualPoints.push(curPt);
 
         this.state.orig.push(curPt);
         const fsteps = fourier.fourier(this.state.orig, {interval: this.state.interval, loops: this.state.tMax});
