@@ -71,7 +71,7 @@ function Coords() {
         if (state.tpos) {
             state.tpos.forEach(s=>{
                 ctx.beginPath();
-                ctx.arc(s.x, translateY(s.y), 2, 0, 2*Math.PI);
+                ctx.arc(translateX(s.x), translateY(s.y), 2, 0, 2*Math.PI);
                 ctx.fill();
             });
         }
