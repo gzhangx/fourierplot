@@ -13,6 +13,7 @@ const DEFAULT_STATE = {
     recalculate:true,
     centerAt: {x: 0, y:0},
     centerPos : 0,
+    scale: 1,
     ui: {
         width: 512,
         height: 512,

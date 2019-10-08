@@ -11,16 +11,18 @@ function Coords() {
         const centerAt = state.centerAt;
         function translateY(y) {
             if (centerAt.y) {
-                return height/2 - (y - centerAt.y)
+                return height/2 - (y - centerAt.y)*state.scale;
             }
-            return (height - y );
+            return (height - y*state.scale );
         }
+
         function translateX(x) {
             if (centerAt.x) {
-                return width/2 + (x - centerAt.x)
+                return width/2 + (x - centerAt.x)*state.scale;
             }
-            return x;
+            return x*state.scale;
         }
+
         function drawLine(x,y,x1,y1) {
             ctx.beginPath();
             ctx.moveTo(translateX(x), translateY(y));
@@ -60,7 +62,7 @@ function Coords() {
                         ctx.beginPath();
                         //ctx.globalAlpha = 0.3;
                         ctx.strokeStyle = 'rgba(0,100,100,0.3)';
-                        ctx.arc(translateX(s.orig.x), translateY(s.orig.y), s.to.mag, 0, 2 * Math.PI);
+                        ctx.arc(translateX(s.orig.x), translateY(s.orig.y), s.to.mag*state.scale, 0, 2 * Math.PI);
                         ctx.stroke();
                         //ctx.globalAlpha = 1;
                     }

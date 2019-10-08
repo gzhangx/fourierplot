@@ -57,6 +57,9 @@ class MainPage extends React.Component {
     centerPosChanged = e=>{
         this.setState({centerPos: parseInt(e.target.value)});
     };
+    scaleChanged = e=>{
+        this.setState({scale: (e.target.value)});
+    };
 
     handleMouseDown = () => { //added code here
         this.setState({mouseDown: true});
@@ -180,6 +183,7 @@ class MainPage extends React.Component {
                     <input type='text' value={this.state.tInc} onChange={this.tIncChanged} />
                     <input type='text' value={this.state.tMax} onChange={this.tMaxChanged} />
                     <input type='text' value={this.state.centerPos} onChange={this.centerPosChanged} />
+                    <input type='text' value={this.state.scale} onChange={this.scaleChanged} />
                     <DownloadLink
 	                        filename="points.txt"
 	                        exportFile={() => JSON.stringify(this.state.orig)}
