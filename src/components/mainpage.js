@@ -54,8 +54,8 @@ class MainPage extends React.Component {
         this.setState({fsteps: this.state.fsteps,times:{}, tpos:[]});
     };
 
-    centerAtChanged = e=>{
-        this.setState({centerAt: parseInt(e.target.value)});
+    centerPosChanged = e=>{
+        this.setState({centerPos: parseInt(e.target.value)});
     };
 
     handleMouseDown = () => { //added code here
@@ -119,10 +119,16 @@ class MainPage extends React.Component {
         const tsteps = [];
         const curPos = fourier.calculate4t(this.state.fsteps, t, (acc,n)=>{
             tsteps.push({orig: acc, to: n});
-        }, this.state.centerAt, (this.state.centerAt+1), {
-            x: this.state.centerAt?500:0,
-            y: this.state.centerAt?500:0,
         });
+        const centerAt = {x:0, y:0};
+        if (this.state.centerPos) {
+            const c = tsteps[this.state.centerPos];
+            if (c) {
+                centerAt.x = c.orig.x;
+                centerAt.y = c.orig.y;
+            }
+        }
+        this.setState({centerAt});
         let tpos = this.state.tpos;
         if (!this.state.times[t]) tpos.push(curPos);
         this.setState({
@@ -173,7 +179,7 @@ class MainPage extends React.Component {
                     <button onClick={this.showCircle}>Show Circle</button>
                     <input type='text' value={this.state.tInc} onChange={this.tIncChanged} />
                     <input type='text' value={this.state.tMax} onChange={this.tMaxChanged} />
-                    <input type='text' value={this.state.centerAt} onChange={this.centerAtChanged} />
+                    <input type='text' value={this.state.centerPos} onChange={this.centerPosChanged} />
                     <DownloadLink
 	                        filename="points.txt"
 	                        exportFile={() => JSON.stringify(this.state.orig)}

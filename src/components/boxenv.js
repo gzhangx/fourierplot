@@ -10,12 +10,21 @@ function Coords() {
         const {width, height } = {width: 500, height: 500 };
         const centerAt = state.centerAt;
         function translateY(y) {
+            if (centerAt.y) {
+                return height/2 - (y - centerAt.y)
+            }
             return (height - y );
+        }
+        function translateX(x) {
+            if (centerAt.x) {
+                return width/2 + (x - centerAt.x)
+            }
+            return x;
         }
         function drawLine(x,y,x1,y1) {
             ctx.beginPath();
-            ctx.moveTo(x, translateY(y));
-            ctx.lineTo(x1, translateY(y1));
+            ctx.moveTo(translateX(x), translateY(y));
+            ctx.lineTo(translateX(x1), translateY(y1));
             ctx.stroke();
         }
 
@@ -45,16 +54,13 @@ function Coords() {
         }
         if (state.tsteps) {
             state.tsteps.map((s, ind)=>{
-                if (centerAt && ind < centerAt) {
-                    return;
-                }
                 drawLine(s.orig.x, s.orig.y, s.to.x, s.to.y);
                 if (state.showCircle) {
                     if (ind) {
                         ctx.beginPath();
                         //ctx.globalAlpha = 0.3;
                         ctx.strokeStyle = 'rgba(0,100,100,0.3)';
-                        ctx.arc(s.orig.x, translateY(s.orig.y), s.to.mag, 0, 2 * Math.PI);
+                        ctx.arc(translateX(s.orig.x), translateY(s.orig.y), s.to.mag, 0, 2 * Math.PI);
                         ctx.stroke();
                         //ctx.globalAlpha = 1;
                     }
