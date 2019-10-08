@@ -25,8 +25,11 @@ class MainPage extends React.Component {
     showCircle = ()=>{
         this.setState({showCircle: !this.state.showCircle});
     };
+    clear = () => {
+        this.setState({t: 0, times:{}, tpos:[], orig: [], tsteps: []});
+    };
     reset = () => {
-        this.setState({t: 0, times:{}, tpos:[], orig: []});
+        this.setState({t: 0, times:{}, tpos:[], tsteps: []});
     };
 
     backForward = (inc) => {
@@ -49,6 +52,10 @@ class MainPage extends React.Component {
     resetAng = (fsind,v)=>{
         this.state.fsteps[fsind].ang = v;
         this.setState({fsteps: this.state.fsteps,times:{}, tpos:[]});
+    };
+
+    centerAtChanged = e=>{
+        this.setState({centerAt: parseInt(e.target.value)});
     };
 
     handleMouseDown = () => { //added code here
@@ -112,6 +119,9 @@ class MainPage extends React.Component {
         const tsteps = [];
         const curPos = fourier.calculate4t(this.state.fsteps, t, (acc,n)=>{
             tsteps.push({orig: acc, to: n});
+        }, this.state.centerAt, (this.state.centerAt+1), {
+            x: this.state.centerAt?500:0,
+            y: this.state.centerAt?500:0,
         });
         let tpos = this.state.tpos;
         if (!this.state.times[t]) tpos.push(curPos);
@@ -127,9 +137,9 @@ class MainPage extends React.Component {
 
     onDrop = (acceptedFiles, rejectedFiles) => {
         const self = this;
-        const reader = new FileReader()        
-        reader.onabort = () => console.log('file reading was aborted')
-        reader.onerror = () => console.log('file reading has failed')
+        const reader = new FileReader()   ;
+        reader.onabort = () => console.log('file reading was aborted');
+        reader.onerror = () => console.log('file reading has failed');
         reader.onload = (event) => {
         // Do whatever you want with the file contents     
             self.setState({orig: JSON.parse(event.target.result.toString())});
@@ -157,11 +167,13 @@ class MainPage extends React.Component {
                     <Coords/>
                 </div>
                 <div>
+                    <button onClick={this.clear}>Clear</button>
                     <button onClick={this.reset}>Reset</button>
                     <button onClick={this.pause}>Pause</button>
                     <button onClick={this.showCircle}>Show Circle</button>
                     <input type='text' value={this.state.tInc} onChange={this.tIncChanged} />
                     <input type='text' value={this.state.tMax} onChange={this.tMaxChanged} />
+                    <input type='text' value={this.state.centerAt} onChange={this.centerAtChanged} />
                     <DownloadLink
 	                        filename="points.txt"
 	                        exportFile={() => JSON.stringify(this.state.orig)}

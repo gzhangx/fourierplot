@@ -7,7 +7,8 @@ import {calculate4t} from '../util/fourier';
 function Coords() {
 
     function processor(ctx, {state}) {
-        const {width, height, bottomSpace} = {width: 500, height: 500, bottomSpace: 10};
+        const {width, height } = {width: 500, height: 500 };
+        const centerAt = state.centerAt;
         function translateY(y) {
             return (height - y );
         }
@@ -44,6 +45,9 @@ function Coords() {
         }
         if (state.tsteps) {
             state.tsteps.map((s, ind)=>{
+                if (centerAt && ind < centerAt) {
+                    return;
+                }
                 drawLine(s.orig.x, s.orig.y, s.to.x, s.to.y);
                 if (state.showCircle) {
                     if (ind) {

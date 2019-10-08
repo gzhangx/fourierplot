@@ -11,6 +11,7 @@ const DEFAULT_STATE = {
     manualPoints : [],
     showCircle: false,
     recalculate:true,
+    centerAt: 0,
     ui: {
         width: 512,
         height: 512,
