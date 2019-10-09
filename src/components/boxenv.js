@@ -58,11 +58,12 @@ function Coords() {
             state.tsteps.map((s, ind)=>{
                 drawLine(s.orig.x, s.orig.y, s.to.x, s.to.y);
                 if (state.showCircle) {
-                    if (ind) {
+                    if (ind && ind >= state.centerPos) {
                         ctx.beginPath();
                         //ctx.globalAlpha = 0.3;
-                        const alpha = ind > state.centerAt ? 0.5:0.1;
-                        ctx.strokeStyle = `rgba(0,100,100, ${alpha})`;
+                        const alpha = 0.9/ind; //ind > state.centerPos ? 0.5:0.1;
+                        const g= (ind*20 + 100)%255;
+                        ctx.strokeStyle = `rgba(0,${g},${g}, ${alpha})`;
                         ctx.arc(translateX(s.orig.x), translateY(s.orig.y), s.to.mag*state.scale, 0, 2 * Math.PI);
                         ctx.stroke();
                         //ctx.globalAlpha = 1;
