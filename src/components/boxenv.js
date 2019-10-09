@@ -61,7 +61,8 @@ function Coords() {
                     if (ind) {
                         ctx.beginPath();
                         //ctx.globalAlpha = 0.3;
-                        ctx.strokeStyle = 'rgba(0,100,100,0.3)';
+                        const alpha = ind > state.centerAt ? 0.5:0.1;
+                        ctx.strokeStyle = `rgba(0,100,100, ${alpha})`;
                         ctx.arc(translateX(s.orig.x), translateY(s.orig.y), s.to.mag*state.scale, 0, 2 * Math.PI);
                         ctx.stroke();
                         //ctx.globalAlpha = 1;
