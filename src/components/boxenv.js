@@ -8,6 +8,10 @@ function Coords() {
 
     function processor(ctx, {state}) {
         const {width, height } = {width: 500, height: 500 };
+        if (!state.needRedraw) {
+            return;
+        }
+        if (!ctx)return true;
         const centerAt = state.centerAt;
         function translateY(y) {
             if (centerAt.y) {
@@ -55,20 +59,30 @@ function Coords() {
             }, { px: null, py: null});
         }
         if (state.tsteps) {
-            state.tsteps.map((s, ind)=>{
+            state.tsteps.reduce((acc, s)=>{
+                const {ind} = acc;
+                let clrCnt = acc.clrCnt;
                 drawLine(s.orig.x, s.orig.y, s.to.x, s.to.y);
                 if (state.showCircle) {
                     if (ind && ind >= state.centerPos) {
                         ctx.beginPath();
                         //ctx.globalAlpha = 0.3;
-                        const alpha = 0.9/ind; //ind > state.centerPos ? 0.5:0.1;
+                        const alpha = 0.9/clrCnt; //ind > state.centerPos ? 0.5:0.1;
                         const g= (ind*20 + 100)%255;
                         ctx.strokeStyle = `rgba(0,${g},${g}, ${alpha})`;
                         ctx.arc(translateX(s.orig.x), translateY(s.orig.y), s.to.mag*state.scale, 0, 2 * Math.PI);
                         ctx.stroke();
+                        clrCnt++;
                         //ctx.globalAlpha = 1;
                     }
                 }
+                return {
+                    clrCnt,
+                    ind : ind + 1,
+                }
+            }, {
+                clrCnt: 1,
+                ind: 0,
             });
         }
 
