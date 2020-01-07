@@ -1,10 +1,13 @@
 import React from 'react';
 import Coords from './boxenv';
+import Coords1D from './horenv';
 
 import {MainContext, DEFAULT_STATE} from "./provider";
 import fourier, {calculate4t} from '../util/fourier';
 import DownloadLink from "react-download-link";
 import Dropzone from 'react-dropzone'
+import { thisTypeAnnotation } from '@babel/types';
+const SLOWFAC = 10;
 const INC = 0.01;
 class MainPage extends React.Component {
     state = DEFAULT_STATE;
@@ -23,43 +26,47 @@ class MainPage extends React.Component {
         this.setState({paused: !this.state.paused});
     };
     showCircle = ()=>{
-        this.setState({showCircle: !this.state.showCircle});
+        this.setState({showCircle: !this.state.showCircle, oneTimeDraw: true,});
     };
     clear = () => {
-        this.setState({t: 0, times:{}, tpos:[], orig: [], tsteps: []});
+        this.setState({t: 0, times:{}, tpos:[], orig: [], tsteps: [], oneTimeDraw: true,});
     };
     reset = () => {
-        this.setState({t: 0, times:{}, tpos:[], tsteps: []});
+        this.setState({t: 0, times:{}, tpos:[], tsteps: [], oneTimeDraw: true,});
     };
 
     backForward = (inc) => {
-        this.setState({t: this.state.t - inc, paused: true, calculated: null});
+        this.setState({t: this.state.t - inc, paused: true, calculated: null, oneTimeDraw: true,});
     };
 
     tIncChanged= e=>{
-        this.setState({tInc: parseFloat(e.target.value) || 0.01});
+        this.setState({tInc: parseFloat(e.target.value) || 0.01, oneTimeDraw: true,});
     };
 
     tMaxChanged = e=>{
-        this.setState({tMax: parseInt(e.target.value) || 10, times:{}, tpos:[], recalculate:true});
+        this.setState({tMax: parseInt(e.target.value) || 10, times:{}, tpos:[], recalculate:true, oneTimeDraw: true,});
     };
 
     resetMag = (fsind,v)=>{
         this.state.fsteps[fsind].mag = v;
-        this.setState({fsteps: this.state.fsteps,times:{}, tpos:[]});
+        this.setState({fsteps: this.state.fsteps,times:{}, tpos:[], oneTimeDraw: true,});
     };
 
     resetAng = (fsind,v)=>{
         this.state.fsteps[fsind].ang = v;
-        this.setState({fsteps: this.state.fsteps,times:{}, tpos:[]});
+        this.setState({fsteps: this.state.fsteps,times:{}, tpos:[], oneTimeDraw: true,});
     };
 
     centerPosChanged = e=>{
-        this.setState({centerPos: parseInt(e.target.value)});
+        this.setState({centerPos: parseInt(e.target.value), oneTimeDraw: true,});
     };
     scaleChanged = e=>{
-        this.setState({scale: (e.target.value)});
+        this.setState({scale: (e.target.value), oneTimeDraw: true,});
     };
+
+    showOneDChanged = e=> {
+        this.setState({showOneD: !this.state.showOneD, oneTimeDraw: true,});
+    }
 
     handleMouseDown = () => { //added code here
         this.setState({mouseDown: true});
@@ -108,7 +115,18 @@ class MainPage extends React.Component {
     };
 
     processState = ()=>{
-        if (this.state.paused) return;
+        if (this.state.paused)  {
+            this.setState({lastTimeCheck: performance.now(),needRedraw: this.state.oneTimeDraw, oneTimeDraw: false});
+            return;
+        } else {
+            const now = performance.now();
+            const tickDiff = (now - this.state.lastTimeCheck);
+            if (tickDiff < SLOWFAC) {
+                this.setState({needRedraw: false});
+                return;
+            }
+            this.setState({lastTimeCheck: now, needRedraw: true});
+        }
         let t = this.state.t;
         if (this.state.orig.length === 0) return;
         if (this.state.recalculate) {
@@ -133,7 +151,11 @@ class MainPage extends React.Component {
         }
         this.setState({centerAt});
         let tpos = this.state.tpos;
-        if (!this.state.times[t]) tpos.push(curPos);
+        const tposTm = parseInt(t*this.state.TIMESMAX);
+        if (!this.state.times[tposTm]) {
+            tpos.push(curPos);
+            this.state.times[tposTm] = curPos;
+        }
         this.setState({
             tsteps,
             curPos,
@@ -174,6 +196,9 @@ class MainPage extends React.Component {
                              this.handleMouseUp(nativeEvent);
                          }}>
                     <Coords/>
+                    {
+                        this.state.showOneD && <Coords1D/>
+                    }
                 </div>
                 <div>
                     <button onClick={this.clear}>Clear</button>
@@ -184,6 +209,7 @@ class MainPage extends React.Component {
                     <input type='text' value={this.state.tMax} onChange={this.tMaxChanged} />
                     <input type='text' value={this.state.centerPos} onChange={this.centerPosChanged} />
                     <input type='text' value={this.state.scale} onChange={this.scaleChanged} />
+                    <input type='checkbox' value={this.state.showOneD} onClick={this.showOneDChanged} />
                     <DownloadLink
 	                        filename="points.txt"
 	                        exportFile={() => JSON.stringify(this.state.orig)}

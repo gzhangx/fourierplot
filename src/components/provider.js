@@ -16,6 +16,8 @@ const DEFAULT_STATE = {
     centerAt: {x: 0, y:0},
     centerPos : 0,
     scale: 1,
+    TIMESMAX: 1000,
+    showOneD: false,
     ui: {
         width: 512,
         height: 512,

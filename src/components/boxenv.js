@@ -58,8 +58,17 @@ function Coords() {
                 }
             }, { px: null, py: null});
         }
+
+        if (state.tpos) {
+            state.tpos.forEach(s=>{
+                ctx.fillStyle = "#0A0";
+                ctx.beginPath();
+                ctx.arc(translateX(s.x), translateY(s.y), 2, 0, 2*Math.PI);
+                ctx.fill();
+            });
+        }
         if (state.tsteps) {
-            state.tsteps.reduce((acc, s)=>{
+            const res = state.tsteps.reduce((acc, s)=>{
                 const {ind} = acc;
                 let clrCnt = acc.clrCnt;
                 drawLine(s.orig.x, s.orig.y, s.to.x, s.to.y);
@@ -79,20 +88,35 @@ function Coords() {
                 return {
                     clrCnt,
                     ind : ind + 1,
+                    last: s.to,
                 }
             }, {
                 clrCnt: 1,
                 ind: 0,
             });
+            const last = res.last;
+            if (last) {                
+                ctx.strokeStyle = "#000";
+                ctx.fillStyle = "#100";
+                ctx.beginPath();                
+                ctx.arc(translateX(last.x), translateY(last.y), 3, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = "#000";
+                drawLine( last.x - 6, last.y, last.x + 6, last.y );
+                drawLine( last.x, last.y - 6, last.x, last.y + 6 );
+                if (state.showOneD) 
+                {            
+                    const last = res.last;
+                    if (last) {
+                        ctx.strokeStyle = "#F00";
+                        drawLine( last.x, last.y, width, last.y );                    
+                        //console.log(last.x + " " + last.y);
+                    }
+                }
+            }
         }
 
-        if (state.tpos) {
-            state.tpos.forEach(s=>{
-                ctx.beginPath();
-                ctx.arc(translateX(s.x), translateY(s.y), 2, 0, 2*Math.PI);
-                ctx.fill();
-            });
-        }
+        
 
     }
 
