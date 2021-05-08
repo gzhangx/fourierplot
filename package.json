@@ -7,8 +7,8 @@
     "react-dom": "^16.10.1",
     "react-download-link": "^2.2.0",
     "react-dropzone": "^10.1.10",
-    "react-scripts": "^3.3.0",
-    "serialize-javascript": "^2.1.2"
+    "react-scripts": "^4.0.3",
+    "serialize-javascript": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.2.1",
+    "mocha": "^8.4.0",
     "nyc": "^14.1.1",
     "sinon": "^7.5.0"
   }
